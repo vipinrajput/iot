@@ -36,7 +36,7 @@ public class TrackDeviceServiceImplTest {
 	@Mock
 	TrackDeviceResponseMapper mapper;
 
-	private static final String path = "C:/Users/vipin/Desktop/data.csv";
+	private String path = "csv/data.csv";
 
 	/**
 	 * Method to Test: loadData What is the Scenario: Successful service call which
