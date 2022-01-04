@@ -46,7 +46,7 @@ public class IOTConsumerRestTest {
 		when(trackDeviceService.loadTrackDeviceData(Mockito.any(TrackDeviceRequestDTO.class)))
 				.thenReturn(deviceResponseDTO);
 		TrackDeviceRequestDTO deviceRequestDTO = new TrackDeviceRequestDTO();
-		deviceRequestDTO.setFilePath("C:/abc/data.csv");
+		deviceRequestDTO.setFilePath("./data.csv");
 		ResponseEntity<TrackDeviceResponseDTO> responseEntity = iotConsumerRest.refreshData(deviceRequestDTO);
 		assertTrue(responseEntity.hasBody());
 		assertEquals(200, responseEntity.getStatusCodeValue());
@@ -57,7 +57,7 @@ public class IOTConsumerRestTest {
 	@Test
 	public void testRefreshDataUnsuccessful() throws FileNotFoundException {
 		TrackDeviceRequestDTO deviceRequestDTO = new TrackDeviceRequestDTO();
-		deviceRequestDTO.setFilePath("C:/abc/data.csv");
+		deviceRequestDTO.setFilePath("./data.csv");
 		when(trackDeviceService.loadTrackDeviceData(Mockito.any(TrackDeviceRequestDTO.class)))
 				.thenThrow(new FileNotFoundException());
 		assertThrows(FileNotFoundException.class, () -> iotConsumerRest.refreshData(deviceRequestDTO));
