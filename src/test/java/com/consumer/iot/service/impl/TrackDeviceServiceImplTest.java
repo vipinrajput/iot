@@ -36,7 +36,7 @@ public class TrackDeviceServiceImplTest {
 	@Mock
 	TrackDeviceResponseMapper mapper;
 
-	private String path = "csv/data.csv";
+	private String path = "./data.csv";
 
 	/**
 	 * Method to Test: loadData What is the Scenario: Successful service call which
@@ -46,7 +46,7 @@ public class TrackDeviceServiceImplTest {
 	@Test
 	public void testLoadTrackDeviceData() throws FileNotFoundException {
 		TrackDeviceRequestDTO deviceRequestDTO = new TrackDeviceRequestDTO();
-		deviceRequestDTO.setFilePath(path);
+		deviceRequestDTO.setFilePath(path);		
 		TrackDeviceResponseDTO deviceResponseDTO = trackDeviceService.loadTrackDeviceData(deviceRequestDTO);
 
 		assertThat(deviceResponseDTO, notNullValue());
