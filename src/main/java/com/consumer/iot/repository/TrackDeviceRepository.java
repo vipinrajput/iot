@@ -3,6 +3,7 @@ package com.consumer.iot.repository;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -51,10 +52,18 @@ public class TrackDeviceRepository {
 	 */
 	public CSVBinderDTO fetchDataOnTimeStamp(String productId, Long dateTime) {
 		LOGGER.info("TrackDeviceServiceImpl Entry.");
-		CSVBinderDTO csvBinderDTO = csvBinderMap.get(productId).stream().filter(a -> a.getDateTime() <= dateTime)
+		List<CSVBinderDTO> csvBinderDTOs = csvBinderMap.get(productId);
+		if (Objects.isNull(csvBinderDTOs)) {
+			throw new ElementNotFoundException();
+		}
+		CSVBinderDTO csvBinderDTO = csvBinderDTOs.stream()
+				.filter(a -> a.getDateTime() <= dateTime || a.getDateTime() >= dateTime)
 				.min(Comparator.comparingLong(d -> {
-					return dateTime - d.getDateTime();
-				})).orElseThrow(ElementNotFoundException::new);
+					if (dateTime > d.getDateTime())
+						return dateTime - d.getDateTime();
+					else
+						return d.getDateTime() - dateTime;
+				})).get();
 		return csvBinderDTO;
 	}
 
@@ -66,8 +75,8 @@ public class TrackDeviceRepository {
 	 */
 	private Map<String, List<CSVBinderDTO>> conversion(List<Object> cvsBinderDTOs) {
 		LOGGER.info("Conversion List to Map");
-		return cvsBinderDTOs.stream().map(dto -> (CSVBinderDTO) dto).collect(Collectors
-				.groupingBy(CSVBinderDTO::getProductId, Collectors.toList()));
+		return cvsBinderDTOs.stream().map(dto -> (CSVBinderDTO) dto)
+				.collect(Collectors.groupingBy(CSVBinderDTO::getProductId, Collectors.toList()));
 	}
 
 }

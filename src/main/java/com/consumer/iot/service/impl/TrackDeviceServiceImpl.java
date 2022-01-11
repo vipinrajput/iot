@@ -51,9 +51,12 @@ public class TrackDeviceServiceImpl implements TrackDeviceService {
 	public TrackDeviceResponseDTO loadTrackDeviceData(TrackDeviceRequestDTO deviceRequestDTO)
 			throws FileNotFoundException {
 		LOGGER.info("File Path " + deviceRequestDTO.getFilePath());
-		File file = ResourceUtils.getFile("classpath:"+deviceRequestDTO.getFilePath());
-		List<Object> cvsBinderDTO = new CsvToBeanBuilder<>(new FileReader(new File(file.getPath())))
-				.withSkipLines(1).withSeparator(',').withType(CSVBinderDTO.class).build().parse();
+		File file = ResourceUtils.getFile("classpath:" + deviceRequestDTO.getFilePath());
+		if(!file.exists()) {
+			throw new FileNotFoundException();
+		}
+		List<Object> cvsBinderDTO = new CsvToBeanBuilder<>(new FileReader(new File(file.getPath()))).withSkipLines(1)
+				.withSeparator(',').withType(CSVBinderDTO.class).build().parse();
 		trackDeviceRepository.saveData(cvsBinderDTO);
 		return TrackDeviceResponseDTO.builder().description(Message.SUCCESS_DESCRIPTION).build();
 	}
